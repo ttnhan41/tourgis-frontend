@@ -6,3 +6,4 @@ export { default as Login } from "./Login";
 export { default as Error } from "./Error";
 export { default as Profile } from "./Profile";
 export { default as Admin } from "./Admin";
+export { default as Map } from "./Map";

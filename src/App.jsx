@@ -6,7 +6,10 @@ import {
   Register,
   Login,
   Error,
+  Map,
 } from "./pages";
+
+import { loader as allTouristAttractionsLoader } from "./pages/Map";
 
 const router = createBrowserRouter([
   {
@@ -29,6 +32,11 @@ const router = createBrowserRouter([
       {
         path: "dashboard",
         element: <DashboardLayout />,
+      },
+      {
+        path: "map",
+        element: <Map />,
+        loader: allTouristAttractionsLoader,
       },
     ],
   },

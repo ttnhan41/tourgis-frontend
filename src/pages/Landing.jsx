@@ -15,8 +15,8 @@ const Landing = () => {
             web tìm kiếm <span>địa điểm du lịch</span>
           </h1>
           <p>Gợi ý và tra cứu địa điểm du lịch ở VN</p>
-          <Link to="/register" className="btn register-link">
-            Đăng ký
+          <Link to="/map" className="btn map-link">
+            Tra cứu bản đồ du lịch
           </Link>
           <Link to="/login" className="btn">
             Đăng nhập

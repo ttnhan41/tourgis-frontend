@@ -28,7 +28,7 @@ const Wrapper = styled.section`
     margin-bottom: 1.5rem;
     max-width: 35em;
   }
-  .register-link {
+  .map-link {
     margin-right: 1rem;
   }
   .main-img {
