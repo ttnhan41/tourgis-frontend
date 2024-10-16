@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-// import '../assets/css/Login.css';
 import {FaUser, FaLock} from "react-icons/fa";
 import Wrapper from "../assets/wrappers/Login";
 
@@ -10,7 +9,7 @@ const Login = () => {
         <form action="">
           <h1>Log In</h1>
           <div className="input-box">
-            <input type="text" placeholder="Username" required />
+            <input type="email" placeholder="Email" required />
             <FaUser className="icon"/>
           </div>
 

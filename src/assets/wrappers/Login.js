@@ -1,13 +1,24 @@
 import styled from "styled-components";
+import background from "../images/react-background.jpg"
+
 
 const Wrapper = styled.section`
-    body {
-        background: url();
-    }
+    /* Đặt ảnh background cho toàn bộ Wrapper*/
+    background-image: url(${background});
+    background-size: cover;
+    background-position: center;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     .wrapper {
         width: 420px;
-        background: #2cb1bc;
+        background: transparent;
+        border: 2px solid rgba(255, 255, 255, .2);
+        backdrop-filter: blur(30px);
+        box-shadow: 0 0 10px rgba(0, 0, 0, .2);
         position: absolute;
         top: 50%;
         left: 50%;
@@ -19,7 +30,7 @@ const Wrapper = styled.section`
     .wrapper h1 {
         font-size: 36px;
         text-align: center;
-        font-family: monospace;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
         font-weight: bold;
     }
 
@@ -44,7 +55,7 @@ const Wrapper = styled.section`
     }
 
     .input-box input::placeholder {
-        color: #fff;
+        color: rgba(255, 255, 255, 0.5);
     }
 
     .input-box .icon {
