@@ -4,7 +4,7 @@ import background from "../images/react-background.jpg"
 
 const Wrapper = styled.section`
     /* Đặt ảnh background cho toàn bộ Wrapper*/
-    background-image: url(${background});
+    // background-image: url(${background});
     background-size: cover;
     background-position: center;
     width: 100vw;
@@ -15,8 +15,8 @@ const Wrapper = styled.section`
 
     .wrapper {
         width: 420px;
-        background: transparent;
-        border: 2px solid rgba(255, 255, 255, .2);
+        background: var(--white);
+        border: 2px solid rgba(0, 0, 0, .2);
         backdrop-filter: blur(30px);
         box-shadow: 0 0 10px rgba(0, 0, 0, .2);
         position: absolute;
@@ -38,7 +38,6 @@ const Wrapper = styled.section`
         position: relative;
         width: 100%;
         height: 50px;
-        /* background: yellowgreen; */
         margin: 30px 0;
     }
 
@@ -47,15 +46,15 @@ const Wrapper = styled.section`
         height: 100%;
         background: transparent;
         outline: none;
-        border: 2px solid rgba(255, 255, 255, .2);
+        border: 2px solid rgba(0, 0, 0, .2);
         border-radius: 40px;
         font-size: 16px;
-        color: #fff;
+        color: var(--black);
         padding: 20px 45px 20px 20px;
     }
 
     .input-box input::placeholder {
-        color: rgba(255, 255, 255, 0.5);
+        color: rgba(0, 0, 0, 0.5);
     }
 
     .input-box .icon {
@@ -79,18 +78,19 @@ const Wrapper = styled.section`
     }
 
     .remember-forgot .forgot {
-        color: #fff;
+        color: var(--black);
+        text-decoration: underline;
     }
 
     .remember-forgot .forgot:hover {
-        text-decoration: underline;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
     }
 
     .wrapper button {
         width: 100%;
         height: 45px;
-        background: #fff;
-        border: none;
+        background: var(--primary-500);
+        border: 2px solid rgba(0, 0, 0, .2);
         outline: none;
         border-radius: 40px;
         box-shadow: 0 0 10px rgba(0, 0, 0, .1);
@@ -107,13 +107,14 @@ const Wrapper = styled.section`
     }
 
     .register-link div .register {
-        color: #fff;
+        color: var(--black);
         text-decoration: none;
         font-weight: 600;
+        text-decoration: underline;
     }
 
     .register-link div .register:hover {
-        text-decoration: underline;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
     }
 `;
 export default Wrapper;
