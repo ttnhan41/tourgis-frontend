@@ -1,5 +1,8 @@
 import Wrapper from "../assets/wrappers/Map";
+import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import "leaflet-control-geocoder/dist/Control.Geocoder.css";
+import "leaflet-control-geocoder/dist/Control.Geocoder.js";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { Icon, divIcon, point } from "leaflet";
 import CurrentLocationIcon from "../assets/images/current-location-icon.png";
@@ -10,6 +13,8 @@ import customFetch from "../utils/customFetch";
 import { useLoaderData } from "react-router-dom";
 import useGeoLocation from "../utils/useGeoLocation";
 import { useRef } from "react";
+import LeafletGeocoder from "../utils/LeafletGeocoder";
+import LeafletRoutingMachine from "../utils/LeafletRoutingMachine";
 
 export const loader = async () => {
   try {
@@ -45,17 +50,17 @@ const Map = () => {
     });
   };
 
-  const location = useGeoLocation();
+  const myLocation = useGeoLocation();
 
   const showMyLocation = () => {
-    if (location.loaded && !location.error) {
+    if (myLocation.loaded && !myLocation.error) {
       mapRef.current.flyTo(
-        [location.coordinates.latitude, location.coordinates.longitude],
+        [myLocation.coordinates.latitude, myLocation.coordinates.longitude],
         zoomLevel,
         { animate: true, duration: 2 }
       );
     } else {
-      alert(location.error.message);
+      alert(myLocation.error.message);
     }
   };
 
@@ -66,6 +71,8 @@ const Map = () => {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
+        <LeafletGeocoder />
+        <LeafletRoutingMachine />
         <MarkerClusterGroup
           chunkedLoading
           iconCreateFunction={createCustomClusterIcon}
@@ -103,11 +110,11 @@ const Map = () => {
           ))}
         </MarkerClusterGroup>
 
-        {location.loaded && !location.error && (
+        {myLocation.loaded && !myLocation.error && (
           <Marker
             position={[
-              location.coordinates.latitude,
-              location.coordinates.longitude,
+              myLocation.coordinates.latitude,
+              myLocation.coordinates.longitude,
             ]}
             icon={customCurrentLocationIcon}
           ></Marker>
@@ -122,4 +129,5 @@ const Map = () => {
     </Wrapper>
   );
 };
+
 export default Map;
