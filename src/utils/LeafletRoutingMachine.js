@@ -5,7 +5,7 @@ import "leaflet-routing-machine/dist/leaflet-routing-machine.js";
 import { useMap } from "react-leaflet";
 import TravelIcon from "../assets/images/cat-travel.gif";
 
-const LeafletRoutingMachine = () => {
+const LeafletRoutingMachine = ({ destination }) => {
   const map = useMap();
   const customTravelIcon = L.icon({
     iconUrl: TravelIcon,
@@ -43,6 +43,46 @@ const LeafletRoutingMachine = () => {
 
   useEffect(() => {
     if (!currentLocation) return; // Only add routing if current location is available
+
+    if (destination) {
+      currentTravellingMarker = L.marker(
+        [currentLocation[0], currentLocation[1]],
+        {
+          icon: customTravelIcon,
+        }
+      ).addTo(map);
+
+      // Create a new routing control with updated waypoints
+      routingControl = L.Routing.control({
+        waypoints: [
+          L.latLng(currentLocation[0], currentLocation[1]),
+          L.latLng(destination[0], destination[1]),
+        ],
+        lineOptions: {
+          styles: [
+            {
+              color: "#2780ca",
+              weight: 4,
+              opacity: 0.8,
+            },
+          ],
+        },
+        routeWhileDragging: false,
+        geocoder: L.Control.Geocoder.nominatim(),
+        addWaypoints: false,
+        fitSelectedRoutes: true,
+        showAlternatives: true,
+        reverseWaypoints: true,
+      })
+        .on("routesfound", function (e) {
+          e.routes[0].coordinates.forEach((c, i) => {
+            setTimeout(() => {
+              currentTravellingMarker.setLatLng([c.lat, c.lng]);
+            }, 100 * i);
+          });
+        })
+        .addTo(map);
+    }
 
     const handleMapClick = (e) => {
       // Remove previous routing control and marker
@@ -98,8 +138,14 @@ const LeafletRoutingMachine = () => {
     // Clean up click event on unmount
     return () => {
       map.off("click", handleMapClick);
+      if (routingControl) {
+        map.removeControl(routingControl);
+      }
+      if (currentTravellingMarker) {
+        map.removeLayer(currentTravellingMarker);
+      }
     };
-  }, [map, currentLocation]);
+  }, [destination, map, currentLocation]);
 
   return null;
 };
