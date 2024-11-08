@@ -1,8 +1,3 @@
-// import styled from "styled-components";
-
-// const Wrapper = styled.section;
-
-// export default Wrapper;
 import styled from "styled-components";
 import background from "../images/react-background.jpg"
 

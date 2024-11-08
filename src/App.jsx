@@ -7,6 +7,7 @@ import {
   Login,
   Error,
   Map,
+  Admin,
 } from "./pages";
 
 import { loader as allTouristAttractionsLoader } from "./pages/Map";
@@ -32,6 +33,10 @@ const router = createBrowserRouter([
       {
         path: "dashboard",
         element: <DashboardLayout />,
+      },
+      {
+        path: "admin",
+        element: <Admin />,
       },
       {
         path: "map",

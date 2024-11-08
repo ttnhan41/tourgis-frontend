@@ -1,4 +1,7 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import {FaUser, FaLock} from "react-icons/fa";
 import Wrapper from "../assets/wrappers/Login";
 
@@ -6,7 +9,7 @@ const Login = () => {
   return (
     <Wrapper>
       <div className="wrapper">
-        <form action="">
+        <form action="" >
           <h1>Đăng nhập</h1>
           <div className="input-box">
             <input type="email" placeholder="emailcuaban@gmail.com" required />
@@ -26,7 +29,7 @@ const Login = () => {
           <button type="submit" className="btn">Đăng nhập</button>
 
           <div className="register-link">
-            <div>Bạn chưa có tài khoản? <Link to="/register" className="btn">Đăng ký</Link></div>
+            <div>Bạn chưa có tài khoản? <Link to="/dashboard" className="btn">Đăng ký</Link></div>
           </div>
         </form>
       </div>
