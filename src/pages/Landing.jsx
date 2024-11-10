@@ -1,9 +1,32 @@
 import Wrapper from "../assets/wrappers/LandingPage";
 import main from "../assets/images/main.svg";
-import { Link } from "react-router-dom";
+import { Link, redirect, useLoaderData, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import { Logo } from "../components";
 
+export const loader = async () => {
+  try {
+    const { data } = await customFetch.get("/auth/validate");
+    return data;
+  } catch (error) {
+    return redirect("/");
+  }
+};
+
 const Landing = () => {
+  const navigate = useNavigate();
+  const { isAuthenticated } = useLoaderData();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/dashboard");
+    }
+  }, [isAuthenticated, navigate]);
+
+  if (isAuthenticated || isAuthenticated === undefined) {
+    return null;
+  }
+
   return (
     <Wrapper>
       <nav>
