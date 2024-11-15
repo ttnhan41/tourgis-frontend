@@ -193,7 +193,7 @@ const Place = () => {
                 </div>
             </div>
 
-            <Modal title={modalType.includes("edit") ? "Chỉnh sửa" : "Thêm mới"} visible={isModalVisible} onCancel={handleCancel} onOk={handleSave} okText='Lưu' cancelText='Hủy'>
+            <Modal title={modalType.includes("edit") ? "Chỉnh sửa" : "Thêm mới"} open={isModalVisible} onCancel={handleCancel} onOk={handleSave} okText='Lưu' cancelText='Hủy'>
                 <Form form={form} layout="vertical">
                     <Form.Item name="name" label="Tên" rules={[{ required: true, message: "Vui lòng nhập tên" }]}>
                         <Input />

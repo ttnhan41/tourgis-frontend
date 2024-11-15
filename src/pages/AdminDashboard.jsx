@@ -2,19 +2,31 @@ import Wrapper from "../assets/wrappers/AdminDashboard";
 import { MdPlace } from "react-icons/md";
 import { FaUserCheck, FaUserPlus } from "react-icons/fa";
 import { FaPlaceOfWorship } from "react-icons/fa";
+import { useState, useEffect } from "react";
+import customFetch from "../utils/customFetch";
+import { toast } from "react-toastify";
 
+const Dashboard = ({ onSeeAll }) => {
 
-const Dashboard = ({onSeeAll}) => {
-    // dữ liệu mẫu cho bảng địa điểm và người dùng gần đây, sau này sẽ thay bằng data từ API
-    const recentUsers = [
-        { id: 1, name: "Nguyễn Ngọc Thanh Sang", email: "sang@gmail.com", dateAdded: "2024-11-01" },
-        { id: 2, name: "Trần Trọng Nhân", email: "nhan@gmail.com", dateAdded: "2024-11-01" },
-    ];
+    const [users, setUsers] = useState([]);
+    const [places, setPlaces] = useState([]);
 
-    const recentPlaces = [
-        { id: 1, name: "Suối tiên", type: "khu du lịch", dateAdded: "2024-11-01" },
-        { id: 2, name: "Hồ đá Làng đại học", type: "khu du lịch", dateAdded: "2024-11-01" },
-    ];
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                // Gọi API để lấy dữ liệu người dùng
+                const usersResponse = await customFetch.get("/users/");
+                setUsers(usersResponse.data.users || []);
+
+                // Gọi API để lấy dữ liệu địa điểm
+                const placesResponse = await customFetch.get("/tourist-attractions/");
+                setPlaces(placesResponse.data.touristAttractions || []);
+            } catch (error) {
+                toast.error(error?.response?.data?.msg || "Lỗi khi tải dữ liệu");
+            }
+        };
+        fetchData();
+    }, []);
 
     return (
         <Wrapper>
@@ -68,7 +80,7 @@ const Dashboard = ({onSeeAll}) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {recentUsers.map((user) => (
+                            {users.map((user) => (
                                 <tr key={user.id}>
                                     <td>{user.id}</td>
                                     <td>{user.name}</td>
@@ -96,12 +108,12 @@ const Dashboard = ({onSeeAll}) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {recentPlaces.map((place) => (
+                            {places.map((place) => (
                                 <tr key={place.id}>
                                     <td>{place.id}</td>
                                     <td>{place.name}</td>
-                                    <td>{place.type}</td>
-                                    <td>{place.dateAdded}</td>
+                                    <td>{place.type.name}</td>
+                                    <td>{place.updatedAt}</td>
                                 </tr>
                             ))}
                         </tbody>
