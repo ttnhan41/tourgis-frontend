@@ -5,13 +5,13 @@ import { useEffect } from "react";
 import { Logo } from "../components";
 
 export const loader = async () => {
-  try {
-    const { data } = await customFetch.get("/auth/validate");
-    return data;
-  } catch (error) {
-    return redirect("/");
-  }
-};
+    try {
+      const { data } = await customFetch.get("/auth/validate");
+      return data;
+    } catch (error) {
+      return redirect("/");
+    }
+  };
 
 const Landing = () => {
   const navigate = useNavigate();

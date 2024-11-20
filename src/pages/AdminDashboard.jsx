@@ -1,4 +1,5 @@
 import Wrapper from "../assets/wrappers/AdminDashboard";
+import { Link, useLoaderData, useNavigate } from "react-router-dom";
 import { MdPlace } from "react-icons/md";
 import { FaUserCheck, FaUserPlus } from "react-icons/fa";
 import { FaPlaceOfWorship } from "react-icons/fa";
@@ -80,9 +81,9 @@ const Dashboard = ({ onSeeAll }) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {users.map((user) => (
-                                <tr key={user.id}>
-                                    <td>{user.id}</td>
+                            {users.map((user, index) => (
+                                <tr key={index}>
+                                    <td>{index + 1}</td>
                                     <td>{user.name}</td>
                                     <td>{user.email}</td>
                                     <td>{user.dateAdded}</td>
@@ -108,9 +109,9 @@ const Dashboard = ({ onSeeAll }) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {places.map((place) => (
-                                <tr key={place.id}>
-                                    <td>{place.id}</td>
+                            {places.map((place, index) => (
+                                <tr key={index}>
+                                    <td>{index + 1}</td>
                                     <td>{place.name}</td>
                                     <td>{place.type.name}</td>
                                     <td>{place.updatedAt}</td>
