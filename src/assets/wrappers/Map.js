@@ -63,6 +63,29 @@ const Wrapper = styled.section`
     width: 15px;
     height: 15px;
   }
+  .filter-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 1em;
+    font-size: 1em;
+    gap: 1em;
+  }
+  .filter-container p {
+    margin-top: 0;
+  }
+  .filter-box {
+    display: block;
+    position: relative;
+    cursor: pointer;
+  }
+  .filter-box input {
+    margin-right: 0.5em;
+    cursor: pointer;
+  }
+  .filter-box input:checked {
+    accent-color: var(--grey-700);
+  }
   h4 {
     font-size: 1.5rem;
   }
@@ -74,6 +97,27 @@ const Wrapper = styled.section`
   .tourist-attraction-img {
     border-radius: 5px;
     margin-bottom: 1rem;
+  }
+  .header-location {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+  .location-name {
+    width: 80%;
+  }
+  .bookmark {
+    color: var(--primary-500);
+    font-size: 2.5rem;
+    cursor: pointer;
+  }
+  .colorless-bookmark {
+    color: var(--black);
+    font-size: 2.5rem;
+    cursor: pointer;
   }
   .btn-list {
     display: flex;

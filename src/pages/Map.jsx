@@ -17,11 +17,20 @@ import { useRef, useState } from "react";
 import LeafletGeocoder from "../utils/LeafletGeocoder";
 import LeafletRoutingMachine from "../utils/LeafletRoutingMachine";
 import toNonAccentVietnamese from "../utils/toNonAccentVietnamese";
+import { BsBookmarkStarFill } from "react-icons/bs";
 
 export const loader = async () => {
   try {
-    const { data } = await customFetch.get("/tourist-attractions");
-    return { data };
+    const [locations, validateResult] = await Promise.all([
+      customFetch.get("/tourist-attractions").then((res) => res.data),
+      customFetch.get("/auth/validate").then((res) => res.data),
+    ]);
+    let allData = [locations, validateResult];
+    if (validateResult.isAuthenticated) {
+      const { data } = await customFetch.get("/users/current-user");
+      allData.push(data);
+    }
+    return allData;
   } catch (error) {
     toast.error(error?.response?.data?.msg);
     return error;
@@ -29,7 +38,15 @@ export const loader = async () => {
 };
 
 const Map = () => {
-  const { data } = useLoaderData();
+  const allData = useLoaderData();
+  const { touristAttractions } = allData[0];
+  const { isAuthenticated } = allData[1];
+  let userData = { name: "anonymous", locationBookmarks: [] };
+  if (isAuthenticated) {
+    const { user } = allData[2];
+    userData = user;
+  }
+
   const HCMCityCoordinates = [10.769444, 106.681944];
   const zoomLevel = 13;
   const mapRef = useRef();
@@ -80,10 +97,34 @@ const Map = () => {
     }
   };
 
-  const [searchQuery, setSearchQuery] = useState("");
+  const [bookmarks, setBookmarks] = useState(
+    userData.locationBookmarks.map((location) => location._id)
+  );
 
-  const filteredLocations = data.touristAttractions.filter((place) =>
-    toNonAccentVietnamese(place.name.toLowerCase()).includes(
+  const toggleBookmark = async (locationId) => {
+    try {
+      const updatedBookmarks = bookmarks.includes(locationId)
+        ? bookmarks.filter((id) => id !== locationId) // Remove from bookmarks
+        : [...bookmarks, locationId]; // Add to bookmarks
+      setBookmarks(updatedBookmarks);
+
+      await customFetch.post("/tourist-attractions/addLocationToBookmark", {
+        id: locationId,
+      });
+    } catch (error) {
+      toast.error(error?.response?.data?.msg);
+    }
+  };
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showOnlyBookmarks, setShowOnlyBookmarks] = useState(false);
+
+  let filteredLocations = showOnlyBookmarks
+    ? touristAttractions.filter((location) => bookmarks.includes(location._id))
+    : touristAttractions;
+
+  filteredLocations = filteredLocations.filter((location) =>
+    toNonAccentVietnamese(location.name.toLowerCase()).includes(
       toNonAccentVietnamese(searchQuery.toLowerCase())
     )
   );
@@ -102,7 +143,7 @@ const Map = () => {
             chunkedLoading
             iconCreateFunction={createCustomClusterIcon}
           >
-            {data.touristAttractions.map((marker) => (
+            {touristAttractions.map((marker) => (
               <Marker
                 key={marker._id}
                 position={[
@@ -157,26 +198,51 @@ const Map = () => {
             />
             <img src={SearchIcon} className="img search-icon-img" />
           </div>
+          {isAuthenticated ? (
+            <div className="filter-container">
+              <p>Bộ lọc:</p>
+              <label className="filter-box">
+                <input
+                  type="checkbox"
+                  checked={showOnlyBookmarks}
+                  onChange={(e) => setShowOnlyBookmarks(e.target.checked)}
+                />
+                Đã đánh dấu
+              </label>
+            </div>
+          ) : null}
 
-          {filteredLocations.map((place) => (
-            <div key={place._id} className="location-box">
+          {filteredLocations.map((location) => (
+            <div key={location._id} className="location-box">
               <img
-                src={place.imageUrl}
+                src={location.imageUrl}
                 alt="tourist attraction"
                 className="img tourist-attraction-img"
               />
-              <h4>{place.name}</h4>
+              <div className="header-location">
+                <h4 className="location-name">{location.name}</h4>
+                {isAuthenticated ? (
+                  <BsBookmarkStarFill
+                    className={
+                      bookmarks.includes(location._id)
+                        ? "bookmark"
+                        : "colorless-bookmark"
+                    }
+                    onClick={() => toggleBookmark(location._id)}
+                  />
+                ) : null}
+              </div>
               <p>
-                <b>Mô tả</b>: {place.description}
+                <b>Mô tả</b>: {location.description}
               </p>
               <p>
-                <b>Loại địa điểm</b>: {place.type.name}
+                <b>Loại địa điểm</b>: {location.type.name}
               </p>
               <p>
-                <b>Địa chỉ</b>: {place.address}
+                <b>Địa chỉ</b>: {location.address}
               </p>
               <p>
-                <b>Số điện thoại</b>: {place.phoneNumber}
+                <b>Số điện thoại</b>: {location.phoneNumber}
               </p>
 
               <div className="btn-list">
@@ -184,8 +250,8 @@ const Map = () => {
                   className="btn"
                   onClick={() =>
                     showDestinationLocation([
-                      place.coordinates.latitude,
-                      place.coordinates.longitude,
+                      location.coordinates.latitude,
+                      location.coordinates.longitude,
                     ])
                   }
                 >
@@ -195,8 +261,8 @@ const Map = () => {
                   className="btn"
                   onClick={() =>
                     setSelectedLocation([
-                      place.coordinates.latitude,
-                      place.coordinates.longitude,
+                      location.coordinates.latitude,
+                      location.coordinates.longitude,
                     ])
                   }
                 >
