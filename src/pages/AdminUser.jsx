@@ -1,6 +1,7 @@
 import Wrapper from "../assets/wrappers/AdminUser";
 import React, {useState} from "react";
 import {Table, Button, Modal} from 'antd';
+import {useNavigate, useLoaderData} from "react-router-dom";
 
 const User = () => {
     // dữ liệu người dùng ảo, sau sẽ lấy từ API
@@ -45,7 +46,7 @@ const User = () => {
 
             <Modal
                 title = "Danh sách địa điểm đã lưu"
-                visible = {isModalVisible}
+                open = {isModalVisible}
                 onCancel={handleCloseModal}
                 footer = {<Button onClick={handleCloseModal}>Đóng</Button>}
             >

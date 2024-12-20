@@ -1,6 +1,6 @@
 import Wrapper from "../assets/wrappers/Admin";
 import { Link, useLoaderData, useNavigate } from "react-router-dom";
-import React, { Suspense, useState } from "react";
+import React, { Suspense, useState, useEffect } from "react";
 import { Menu, Dropdown, Button } from "antd";
 
 import Dashboard from "./AdminDashboard";
@@ -38,7 +38,6 @@ const Admin = () => {
   const data = useLoaderData();
   const { user } = data[0];
   const appStats = data[1];
-  //console.log(appStats);
 
   const logoutUser = async () => {
     navigate("/");
@@ -62,16 +61,43 @@ const Admin = () => {
             <Place />
           </Suspense>
         );
+        // return <Place />;
       case "user":
         return (
           <Suspense fallback={<div>Loading...</div>}>
             <User />
           </Suspense>
         );
+        // return <User />;
       default:
         return <Dashboard onSeeAll={handleSeeAll} />;
     }
   };
+
+  // Tạo mảng items cho Menu
+  const menuItems = [
+    {
+      key: 'dashboard',
+      icon: <TbLayoutDashboardFilled />,
+      label: "Dashboard",
+      onClick: () => setSelectedTab("dashboard"),
+      className: "item",
+    },
+    {
+      key: "place",
+      icon: <MdPlace />,
+      label: "Place",
+      onClick: () => setSelectedTab("place"),
+      className: "item",
+    },
+    {
+      key: "user",
+      icon: <FaUserCog />,
+      label:"User",
+      onClick: () => setSelectedTab("user"),
+      className: "item",
+    },
+  ]
 
   return (
     <Wrapper>
@@ -83,7 +109,7 @@ const Admin = () => {
             </div>
             <h2>Tour Gis</h2>
           </div>
-          <Menu
+          {/* <Menu
             mode="inline"
             // defaultSelectedKeys={['dashboard']}
             selectedKeys={[selectedTab]} //thay defaultSelectedKeys bằng selectedKeys để đồng bộ hóa lựa chọn trang khi xử lý handleSeeAll
@@ -113,7 +139,13 @@ const Admin = () => {
               <FaUserCog />
               &nbsp;User
             </Menu.Item>
-          </Menu>
+          </Menu> */}
+          <Menu
+            mode="inline"
+            selectedKeys={[selectedTab]} // Đồng bộ hóa lựa chọn tab
+            items={menuItems} // Thay thế children bằng items
+            className="navigate"
+          />
         </div>
         <div className="main-content">
           <header className="header">
