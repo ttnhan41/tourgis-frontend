@@ -4,11 +4,12 @@ const Wrapper = styled.section`
   .map-and-list {
     display: flex;
     align-items: flex-start;
-    width: 100%;
+    width: 100vw;
+    height: 77vh;
     overflow: hidden;
   }
   .leaflet-container {
-    height: 90vh;
+    height: 77vh;
     width: 75vw;
     box-sizing: border-box;
   }
@@ -26,7 +27,7 @@ const Wrapper = styled.section`
   }
   .location-list {
     width: 25vw;
-    height: 90vh;
+    height: 77vh;
     overflow-y: auto;
     padding: 1em;
     box-sizing: border-box;

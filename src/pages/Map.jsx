@@ -7,7 +7,6 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { Icon, divIcon, point } from "leaflet";
 import SearchIcon from "../assets/images/search-icon.png";
 import CurrentLocationIcon from "../assets/images/current-location-icon.png";
-import MarkerIcon from "../assets/images/marker-icon.png";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import { toast } from "react-toastify";
 import customFetch from "../utils/customFetch";
@@ -18,14 +17,17 @@ import LeafletGeocoder from "../utils/LeafletGeocoder";
 import LeafletRoutingMachine from "../utils/LeafletRoutingMachine";
 import toNonAccentVietnamese from "../utils/toNonAccentVietnamese";
 import { BsBookmarkStarFill } from "react-icons/bs";
+import CustomMarker from "../components/CustomMarker";
+import CategorieList from "../components/CategoryList";
 
 export const loader = async () => {
   try {
-    const [locations, validateResult] = await Promise.all([
+    const [locations, categories, validateResult] = await Promise.all([
       customFetch.get("/tourist-attractions").then((res) => res.data),
+      customFetch.get("/categories").then((res) => res.data),
       customFetch.get("/auth/validate").then((res) => res.data),
     ]);
-    let allData = [locations, validateResult];
+    let allData = [locations, categories, validateResult];
     if (validateResult.isAuthenticated) {
       const { data } = await customFetch.get("/users/current-user");
       allData.push(data);
@@ -40,10 +42,11 @@ export const loader = async () => {
 const Map = () => {
   const allData = useLoaderData();
   const { touristAttractions } = allData[0];
-  const { isAuthenticated } = allData[1];
+  const { categories } = allData[1];
+  const { isAuthenticated } = allData[2];
   let userData = { name: "anonymous", locationBookmarks: [] };
   if (isAuthenticated) {
-    const { user } = allData[2];
+    const { user } = allData[3];
     userData = user;
   }
 
@@ -55,11 +58,6 @@ const Map = () => {
   const customCurrentLocationIcon = new Icon({
     iconUrl: CurrentLocationIcon,
     iconSize: [30, 30],
-  });
-
-  const customDestinationIcon = new Icon({
-    iconUrl: MarkerIcon,
-    iconSize: [40, 40],
   });
 
   const createCustomClusterIcon = (cluster) => {
@@ -88,7 +86,7 @@ const Map = () => {
 
   const showDestinationLocation = (coords) => {
     if (coords) {
-      mapRef.current.flyTo(coords, zoomLevel, {
+      mapRef.current.flyTo(coords, zoomLevel + 2, {
         animate: true,
         duration: 2,
       });
@@ -116,12 +114,17 @@ const Map = () => {
     }
   };
 
+  const [filteredByCategoryLocations, setFilteredByCategoryLocations] =
+    useState(touristAttractions);
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [showOnlyBookmarks, setShowOnlyBookmarks] = useState(false);
 
   let filteredLocations = showOnlyBookmarks
-    ? touristAttractions.filter((location) => bookmarks.includes(location._id))
-    : touristAttractions;
+    ? filteredByCategoryLocations.filter((location) =>
+        bookmarks.includes(location._id)
+      )
+    : filteredByCategoryLocations;
 
   filteredLocations = filteredLocations.filter((location) =>
     toNonAccentVietnamese(location.name.toLowerCase()).includes(
@@ -129,8 +132,27 @@ const Map = () => {
     )
   );
 
+  const handleCategorySelect = (categoryId) => {
+    if (selectedCategory === categoryId) {
+      setSelectedCategory(null);
+      setFilteredByCategoryLocations(touristAttractions);
+    } else {
+      setSelectedCategory(categoryId);
+      setFilteredByCategoryLocations(
+        touristAttractions.filter((location) =>
+          location.category.some((category) => category._id === categoryId)
+        )
+      );
+    }
+  };
+
   return (
     <Wrapper>
+      <CategorieList
+        categoryData={categories}
+        selectedCategory={selectedCategory}
+        onCategorySelect={handleCategorySelect}
+      />
       <div className="map-and-list">
         <MapContainer center={HCMCityCoordinates} zoom={zoomLevel} ref={mapRef}>
           <TileLayer
@@ -144,35 +166,19 @@ const Map = () => {
             iconCreateFunction={createCustomClusterIcon}
           >
             {touristAttractions.map((marker) => (
-              <Marker
+              <CustomMarker
                 key={marker._id}
                 position={[
                   marker.coordinates.latitude,
                   marker.coordinates.longitude,
                 ]}
-                icon={customDestinationIcon}
-              >
-                <Popup>
-                  <h4>{marker.name}</h4>
-                  <p>
-                    <b>Mô tả</b>: {marker.description}
-                  </p>
-                  <p>
-                    <b>Loại địa điểm</b>: {marker.type.name}
-                  </p>
-                  <p>
-                    <b>Địa chỉ</b>: {marker.address}
-                  </p>
-                  <p>
-                    <b>Số điện thoại</b>: {marker.phoneNumber}
-                  </p>
-                  <img
-                    src={marker.imageUrl}
-                    alt="tourist attraction"
-                    className="img tourist-attraction-img"
-                  />
-                </Popup>
-              </Marker>
+                destinationImage={marker.imageUrl}
+                name={marker.name}
+                description={marker.description}
+                type={marker.type.name}
+                address={marker.address}
+                phoneNumber={marker.phoneNumber}
+              />
             ))}
           </MarkerClusterGroup>
 

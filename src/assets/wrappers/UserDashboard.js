@@ -13,6 +13,7 @@ const Wrapper = styled.section`
   }
   .map-link {
     margin-top: 2rem;
+    padding: 0.8rem;
   }
   .map-img {
     width: 60%;

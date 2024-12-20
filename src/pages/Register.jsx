@@ -198,6 +198,10 @@ const Register = () => {
             Đăng nhập
           </Link>
         </div>
+
+        <Link to="/" className="link">
+          {"<<"} Về trang chủ
+        </Link>
       </div>
     </Wrapper>
   );

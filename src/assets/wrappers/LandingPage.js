@@ -1,6 +1,13 @@
 import styled from "styled-components";
 
 const Wrapper = styled.section`
+  background: linear-gradient(
+    120deg,
+    var(--white) 60%,
+    var(--primary-50) 70%,
+    var(--primary-200) 0%
+  );
+  height: 100vh;
   nav {
     width: var(--fluid-width);
     max-width: var(--max-width);
@@ -23,6 +30,7 @@ const Wrapper = styled.section`
     margin-bottom: 1.5rem;
   }
   p {
+    font-size: 1.5rem;
     line-height: 2;
     color: var(--text-secondary-color);
     margin-bottom: 1.5rem;
