@@ -139,13 +139,12 @@ const Wrapper = styled.section`
         }
     }
 
-
-
-    
-
-
-
-
+    .name-column {
+    white-space: nowrap;      /* Không xuống dòng */
+    overflow: hidden;         /* Ẩn phần nội dung vượt quá */
+    text-overflow: ellipsis;  /* Thêm "..." nếu bị cắt */
+    max-width: 150px;         /* Giới hạn chiều rộng cột */
+    }
 `;
 
 export default Wrapper;

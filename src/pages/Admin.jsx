@@ -1,5 +1,5 @@
 import Wrapper from "../assets/wrappers/Admin";
-import { Link, useLoaderData, useNavigate } from "react-router-dom";
+import { Link, Outlet, useLoaderData, useNavigate } from "react-router-dom";
 import React, { Suspense, useState, useEffect } from "react";
 import { Menu, Dropdown, Button } from "antd";
 
@@ -35,7 +35,7 @@ const User = React.lazy(() => import("./AdminUser"));
 const Admin = () => {
   const navigate = useNavigate();
   const [showMenu, setShowMenu] = useState(false);
-  const data = useLoaderData();
+  const data = useLoaderData(); // Lấy dữ liệu từ loader Admin
   const { user } = data[0];
   const appStats = data[1];
 
@@ -57,7 +57,7 @@ const Admin = () => {
         return <Dashboard onSeeAll={handleSeeAll} />;
       case "place":
         return (
-          <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div>Loading...</div>}>
             <Place />
           </Suspense>
         );
@@ -66,7 +66,7 @@ const Admin = () => {
         return (
           <Suspense fallback={<div>Loading...</div>}>
             <User />
-          </Suspense>
+    </Suspense>
         );
         // return <User />;
       default:
@@ -107,39 +107,8 @@ const Admin = () => {
             <div className="logo">
               <Logo />
             </div>
-            <h2>Tour Gis</h2>
+            {/* <h2>Tour Gis</h2> */}
           </div>
-          {/* <Menu
-            mode="inline"
-            // defaultSelectedKeys={['dashboard']}
-            selectedKeys={[selectedTab]} //thay defaultSelectedKeys bằng selectedKeys để đồng bộ hóa lựa chọn trang khi xử lý handleSeeAll
-            className="navigate"
-          >
-            <Menu.Item
-              key="dashboard"
-              onClick={() => setSelectedTab("dashboard")}
-              className="item"
-            >
-              <TbLayoutDashboardFilled />
-              &nbsp;Dashboard
-            </Menu.Item>
-            <Menu.Item
-              key="place"
-              onClick={() => setSelectedTab("place")}
-              className="item"
-            >
-              <MdPlace />
-              &nbsp;Place
-            </Menu.Item>
-            <Menu.Item
-              key="user"
-              onClick={() => setSelectedTab("user")}
-              className="item"
-            >
-              <FaUserCog />
-              &nbsp;User
-            </Menu.Item>
-          </Menu> */}
           <Menu
             mode="inline"
             selectedKeys={[selectedTab]} // Đồng bộ hóa lựa chọn tab

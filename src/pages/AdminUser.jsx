@@ -1,36 +1,80 @@
 import Wrapper from "../assets/wrappers/AdminUser";
-import React, {useState} from "react";
-import {Table, Button, Modal} from 'antd';
+import React, {useState, useEffect} from "react";
+import {Table, Button, Modal, Tooltip, List} from 'antd';
+import { EditOutlined, DeleteOutlined, PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import {useNavigate, useLoaderData} from "react-router-dom";
+import customFetch from "../utils/customFetch";
+import { toast } from "react-toastify";
 
 const User = () => {
-    // dữ liệu người dùng ảo, sau sẽ lấy từ API
-    const userData = [
-        { id: 1, username: 'Nguyễn Ngọc Thanh Sang', email: 'sang@gmail.com', bookmarkCount: 5, registeredDate: '2024-01-01', bookmarks: ['Location A', 'Location B', 'Location C'] },
-        { id: 2, username: 'Trần Trọng Nhân', email: 'nhan@gmail.com', bookmarkCount: 3, registeredDate: '2024-02-01', bookmarks: ['Location D', 'Location E'] },
-        // Thêm dữ liệu mẫu khác...
-    ];
 
-    // State cho popup và dữ liệu bookmarks
+    const [users, setUsers] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedBookmarks, setSelectedBookmarks] = useState([]);
 
-    // cấu hình cột cho bảng
-    const columns = [
-        { title: 'ID', dataIndex: 'id', key: 'id' },
-        { title: 'Tên người dùng', dataIndex: 'username', key: 'username', render: (text, record) => (
-            <Button type="link" onClick={() => handleShowBookmarks(record)}>
-                {text}
-            </Button>
-        ) },
-        { title: 'Email', dataIndex: 'email', key: 'email' },
-        { title: 'Số lượng địa điểm đã bookmark', dataIndex: 'bookmarkCount', key: 'bookmarkCount' },
-        { title: 'Ngày đăng ký', dataIndex: 'registeredDate', key: 'registeredDate' },
-    ]
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const response = await customFetch.get('/users/');
+                const userData = response.data.users || [];
+                setUsers(userData);
+            }
+            catch (error) {
+                toast.error(error?.response?.data?.msg || "Lỗi khi tải dữ liệu");
+            }
+        };
+        fetchUsers();
+    }, []);
 
+    const columns = [
+        { 
+            title: 'STT', 
+            key: 'index',
+            width: 60,
+            render: (text, record, index) => index + 1 // index bắt đầu từ 0
+        },
+        {
+            title: 'Tên người dùng',
+            dataIndex: 'name',
+            key: 'name',
+            render: (text, record) => (
+                <Tooltip title={text}>
+                    <Button type="link" onClick={() => handleShowBookmarks(record)}>
+                        {text}
+                    </Button>
+                </Tooltip>
+            ),
+        },
+        { 
+            title: 'Địa chỉ', 
+            dataIndex: 'location', 
+            key: 'location', 
+            ellipsis: true, 
+            render: (text) => (
+            <Tooltip title={text}>
+                {text}
+            </Tooltip>
+        )},
+        { title: 'Email', dataIndex: 'email', key: 'email' },
+        {
+            title: 'Số lượng địa điểm đã bookmark',
+            dataIndex: 'locationBookmarks',
+            key: 'bookmarkCount',
+            render: (bookmarks) => bookmarks.length, // Tính độ dài của mảng
+        },
+        { title: "Vai trò", dataIndex: 'role', key: 'role'},
+        {
+            title: 'Thao Tác', key: 'actions', render: (text, record) => (
+                <>
+                    <Button icon={<EditOutlined />} onClick={() => showModal("editCategory", record)} style={{ marginRight: 8 }} />
+                    <Button icon={<DeleteOutlined />} />
+                </>
+            )
+        },
+    ]
     // Hiện popup khi nhấn vào tên người dùng
     const handleShowBookmarks = (record) => {
-        setSelectedBookmarks(record.bookmarks || []);
+        setSelectedBookmarks(record.locationBookmards || []);
         setIsModalVisible(true);
     };
 
@@ -42,19 +86,26 @@ const User = () => {
 
     return (
         <Wrapper>
-            <Table columns={columns} dataSource={userData} rowKey="id" />
+            <Table columns={columns} dataSource={users} rowKey="id" />
 
             <Modal
                 title = "Danh sách địa điểm đã lưu"
                 open = {isModalVisible}
                 onCancel={handleCloseModal}
-                footer = {<Button onClick={handleCloseModal}>Đóng</Button>}
+                // footer = {<Button onClick={handleCloseModal}>Đóng</Button>}
+                footer = {null}
             >
-                 <ul>
-                    {selectedBookmarks.map((bookmark, index) => (
-                        <li key={index}>{bookmark}</li>
-                    ))}
-                </ul>
+                 <List
+                    dataSource={selectedBookmarks}
+                    renderItem={(item) => (
+                        <List.Item>
+                            <List.Item.Meta
+                                title={`Địa điểm ID: ${item}`}
+                                description={`Chi tiết ID: ${item}`} // Thay bằng chi tiết khác nếu có
+                            />
+                        </List.Item>
+                    )}
+                />
             </Modal>
         </Wrapper>
     )

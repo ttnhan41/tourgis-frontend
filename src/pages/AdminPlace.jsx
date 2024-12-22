@@ -15,6 +15,37 @@ const Place = () => {
     const [modalType, setModalType] = useState("");
     const [form] = Form.useForm();
 
+    const [categories, setCategories] = useState([]);
+    const [types, setTypes] = useState([]);
+    const [places, setPlaces] = useState([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                // fetch categories
+                const categoriesResponse = await customFetch.get("/categories/");
+                console.log(categoriesResponse.data.categories);
+                const categoriesData = categoriesResponse.data.categories || [];
+                setCategories(categoriesData);
+
+                // fetch types
+                const typesResponse = await customFetch.get("/types/");
+                const typesData = typesResponse.data.types || [];
+                setTypes(typesData);
+
+                // fetch places
+                const placesResponse = await customFetch.get("/tourist-attractions/");
+                console.log(placesResponse.data.touristAttractions);
+                const placesData = placesResponse.data.touristAttractions || [];
+                setPlaces(placesData);
+            }
+            catch (error) {
+                toast.error(error?.response?.data?.msg || "Lỗi khi tải dữ liệu");
+            }
+        };
+        fetchData();
+    }, []);
+
     const showModal = (type, record = null) => {
         setModalType(type);
         setEditingRecord(record);
@@ -61,59 +92,12 @@ const Place = () => {
         });
     };
 
-    // dữ liệu mẫu cho các bảng
-    const [categories, setCategories] = useState([
-        { id: 1, name: "Thiên nhiên", description: "Những địa điểm thiên nhiên đẹp", dateAdded: "2024-11-07" },
-        { id: 2, name: "Lịch sử", description: "Các di tích lịch sử", dateAdded: "2024-11-07" },
-        { id: 3, name: "Văn hóa", description: "Những địa điểm văn hóa đặc sắc", dateAdded: "2024-11-06" },
-        { id: 4, name: "Giải trí", description: "Các khu vui chơi giải trí nổi bật", dateAdded: "2024-11-05" },
-        { id: 5, name: "Ẩm thực", description: "Những nhà hàng, quán ăn nổi tiếng", dateAdded: "2024-11-04" },
-        { id: 6, name: "Shopping", description: "Các trung tâm mua sắm lớn", dateAdded: "2024-11-03" },
-        { id: 7, name: "Lễ hội", description: "Các lễ hội đặc sắc trong năm", dateAdded: "2024-11-02" },
-        { id: 8, name: "Du lịch", description: "Các tour du lịch hấp dẫn", dateAdded: "2024-11-01" },
-        { id: 9, name: "Khám phá", description: "Những địa điểm khám phá mới lạ", dateAdded: "2024-10-31" },
-        { id: 10, name: "Thể thao", description: "Các khu vực thể thao và hoạt động ngoài trời", dateAdded: "2024-10-30" },
-    ]);
-
-    const [types, setTypes] = useState([
-        { id: 1, name: "Núi", category: "Thiên nhiên" },
-        { id: 2, name: "Bãi biển", category: "Thiên nhiên" },
-        { id: 3, name: "Chợ", category: "Shopping, Khám phá, Ẩm thực" },
-        { id: 4, name: "Công viên", category: "Giải trí" },
-        { id: 5, name: "Khu di tích", category: "Lịch sử" },
-        { id: 6, name: "Nhà hát", category: "Giải trí, Văn hóa" },
-        { id: 7, name: "Nhà hàng", category: "Ẩm thực" },
-        { id: 8, name: "Trung tâm mua sắm", category: "Shopping" },
-        { id: 9, name: "Bảo tàng", category: "Văn hóa, Lịch sử" },
-        { id: 10, name: "Khu du lịch sinh thái", category: "Thiên nhiên, Du lịch" },
-        { id: 11, name: "Sân vận động", category: "Thể thao" },
-        { id: 12, name: "Địa điểm lễ hội", category: "Lễ hội, Giải trí" },
-        { id: 13, name: "Khu nghỉ dưỡng", category: "Thiên nhiên, Du lịch" },
-        { id: 14, name: "Cửa hàng quà tặng", category: "Shopping" },
-        { id: 15, name: "Thể thao ngoài trời", category: "Thể thao" },
-    ]);
-
-    const [places, setPlaces] = useState([
-        { id: 1, name: "Suối Tiên", type: "Khu du lịch sinh thái", dateAdded: "2024-11-01", imageURL: "image.jpg" },
-        { id: 2, name: "Hồ Đá", type: "Khu du lịch sinh thái", dateAdded: "2024-11-01", imageURL: "image.jpg" },
-        { id: 3, name: "Đồi Cù", type: "Núi", dateAdded: "2024-11-02", imageURL: "image.jpg" },
-        { id: 4, name: "Biển Nha Trang", type: "Bãi biển", dateAdded: "2024-11-03", imageURL: "image.jpg" },
-        { id: 5, name: "Chợ Bến Thành", type: "Chợ", dateAdded: "2024-11-03", imageURL: "image.jpg" },
-        { id: 6, name: "Công viên Gia Định", type: "Công viên", dateAdded: "2024-11-04", imageURL: "image.jpg" },
-        { id: 7, name: "Dinh Độc Lập", type: "Khu di tích", dateAdded: "2024-11-04", imageURL: "image.jpg" },
-        { id: 8, name: "Nhà hát Thành phố", type: "Nhà hát", dateAdded: "2024-11-05", imageURL: "image.jpg" },
-        { id: 9, name: "Nhà hàng Gánh", type: "Nhà hàng", dateAdded: "2024-11-05", imageURL: "image.jpg" },
-        { id: 10, name: "Vincom Center", type: "Trung tâm mua sắm", dateAdded: "2024-11-06", imageURL: "image.jpg" },
-        { id: 11, name: "Bảo tàng Lịch sử Việt Nam", type: "Bảo tàng", dateAdded: "2024-11-06", imageURL: "image.jpg" },
-        { id: 12, name: "Sân vận động Mỹ Đình", type: "Sân vận động", dateAdded: "2024-11-07", imageURL: "image.jpg" },
-        { id: 13, name: "Đầm Sen", type: "Địa điểm lễ hội", dateAdded: "2024-11-07", imageURL: "image.jpg" },
-        { id: 14, name: "Khu nghỉ dưỡng Alma", type: "Khu nghỉ dưỡng", dateAdded: "2024-11-08", imageURL: "image.jpg" },
-        { id: 15, name: "Cửa hàng lưu niệm Lotte", type: "Cửa hàng quà tặng", dateAdded: "2024-11-08", imageURL: "image.jpg" },
-        { id: 16, name: "Khu thể thao Phú Thọ", type: "Thể thao ngoài trời", dateAdded: "2024-11-09", imageURL: "image.jpg" },
-    ]);
-
     const categoryColumns = [
-        { title: 'ID', dataIndex: 'id', key: 'id' },
+        { 
+            title: 'STT', 
+            key: 'index',
+            render: (text, record, index) => index + 1 // index bắt đầu từ 0
+        },
         { title: 'Tên Phân Loại', dataIndex: 'name', key: 'name' },
         { title: 'Mô Tả', dataIndex: 'description', key: 'description' },
         // { title: 'Ngày cập nhật', dataIndex: 'dateAdded', key: 'dateAdded'},
@@ -128,7 +112,11 @@ const Place = () => {
     ];
 
     const typeColumns = [
-        { title: 'ID', dataIndex: 'id', key: 'id' },
+        { 
+            title: 'STT', 
+            key: 'index',
+            render: (text, record, index) => index + 1 // index bắt đầu từ 0
+        },
         { title: 'Tên Loại', dataIndex: 'name', key: 'name' },
         { title: 'Phân Loại', dataIndex: 'category', key: 'category' },
         {
@@ -142,12 +130,21 @@ const Place = () => {
     ];
 
     const placeColumns = [
-        { title: 'ID', dataIndex: 'id', key: 'id' },
+        { 
+            title: 'STT', 
+            key: 'index',
+            render: (text, record, index) => index + 1 // index bắt đầu từ 0
+        },
         { title: 'Tên Địa Điểm', dataIndex: 'name', key: 'name' },
-        { title: 'Loại', dataIndex: 'type', key: 'type' },
-        { title: 'Ảnh', dataIndex: 'imageURL', key: 'image', render: (text) => <span>{text}</span> },
-        { title: 'Ngày Thêm', dataIndex: 'dateAdded', key: 'dateAdded' },
-
+        { title: 'Loại', dataIndex: 'type', key: 'type', render: (text) => text ? text.name : "" },
+        // { title: 'Ảnh', dataIndex: 'imageURL', key: 'image', render: (text) => <span>{text}</span> },
+        {
+            title: 'Ảnh',
+            dataIndex: 'imageURL',
+            key: 'image',
+            render: (text) => <img src={text} alt="Ảnh địa điểm" style={{ width: 100, height: 100 }} />
+        },
+        { title: 'Ngày Thêm', dataIndex: 'createdAt', key: 'dateAdded', render: (text) => text ? new Date(text).toLocaleDateString("vi-VN") : '' },
         {
             title: 'Thao Tác', key: 'actions', render: (text, record) => (
                 <>

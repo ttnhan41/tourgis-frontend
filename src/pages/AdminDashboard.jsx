@@ -11,17 +11,24 @@ const Dashboard = ({ onSeeAll }) => {
 
     const [users, setUsers] = useState([]);
     const [places, setPlaces] = useState([]);
+    const [usersCount, setUsersCount] = useState(0);
+    const [placesCount, setPlacesCount] = useState(0);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 // Gọi API để lấy dữ liệu người dùng
                 const usersResponse = await customFetch.get("/users/");
-                setUsers(usersResponse.data.users || []);
+                const users = usersResponse.data.users || [];
+                setUsers(users);
+                setUsersCount(users.length);
 
                 // Gọi API để lấy dữ liệu địa điểm
                 const placesResponse = await customFetch.get("/tourist-attractions/");
-                setPlaces(placesResponse.data.touristAttractions || []);
+                const places = placesResponse.data.touristAttractions || [];
+                setPlaces(places);
+                setPlacesCount(places.length);
+
             } catch (error) {
                 toast.error(error?.response?.data?.msg || "Lỗi khi tải dữ liệu");
             }
@@ -34,14 +41,14 @@ const Dashboard = ({ onSeeAll }) => {
             <div className="statistics">
                 <div className="box">
                     <div className="displayed-data">
-                        <h2>01</h2>
+                        <h2>{usersCount}</h2>
                         <div className="type">Người dùng hiện có</div>
                     </div>
                     <FaUserCheck className="icon" />
                 </div>
                 <div className="box">
                     <div className="displayed-data">
-                        <h2>01</h2>
+                        <h2>{placesCount}</h2>
                         <div className="type">Địa điểm có sẵn</div>
                         <br />
                     </div>
@@ -84,7 +91,7 @@ const Dashboard = ({ onSeeAll }) => {
                             {users.map((user, index) => (
                                 <tr key={index}>
                                     <td>{index + 1}</td>
-                                    <td>{user.name}</td>
+                                    <td className="name-column">{user.name}</td>
                                     <td>{user.email}</td>
                                     <td>{user.dateAdded}</td>
                                 </tr>
@@ -114,7 +121,7 @@ const Dashboard = ({ onSeeAll }) => {
                                     <td>{index + 1}</td>
                                     <td>{place.name}</td>
                                     <td>{place.type.name}</td>
-                                    <td>{place.updatedAt}</td>
+                                    <td>{new Date(place.updatedAt).toLocaleDateString("vi-VN")}</td>
                                 </tr>
                             ))}
                         </tbody>
