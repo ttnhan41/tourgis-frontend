@@ -23,6 +23,7 @@ const Wrapper = styled.div`
     visibility: hidden;
     border-radius: var(--border-radius);
     background: var(--primary-500);
+    z-index: 99;
   }
   .show-dropdown {
     visibility: visible;

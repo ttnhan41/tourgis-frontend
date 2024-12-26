@@ -57,18 +57,18 @@ const Admin = () => {
         return <Dashboard onSeeAll={handleSeeAll} />;
       case "place":
         return (
-    <Suspense fallback={<div>Loading...</div>}>
+          <Suspense fallback={<div>Loading...</div>}>
             <Place />
           </Suspense>
         );
-        // return <Place />;
+      // return <Place />;
       case "user":
         return (
           <Suspense fallback={<div>Loading...</div>}>
             <User />
-    </Suspense>
+          </Suspense>
         );
-        // return <User />;
+      // return <User />;
       default:
         return <Dashboard onSeeAll={handleSeeAll} />;
     }
@@ -77,7 +77,7 @@ const Admin = () => {
   // Tạo mảng items cho Menu
   const menuItems = [
     {
-      key: 'dashboard',
+      key: "dashboard",
       icon: <TbLayoutDashboardFilled />,
       label: "Dashboard",
       onClick: () => setSelectedTab("dashboard"),
@@ -93,11 +93,11 @@ const Admin = () => {
     {
       key: "user",
       icon: <FaUserCog />,
-      label:"User",
+      label: "User",
       onClick: () => setSelectedTab("user"),
       className: "item",
     },
-  ]
+  ];
 
   return (
     <Wrapper>
@@ -122,7 +122,7 @@ const Admin = () => {
             <div className="search-box">
               <div className="input-box">
                 <CiSearch className="search-icon" />
-                <input type="text" placeholder="Seach something" />
+                <input type="text" placeholder="Tìm kiếm..." />
               </div>
             </div>
 

@@ -159,6 +159,7 @@ const Wrapper = styled.section`
     visibility: hidden;
     border-radius: var(--border-radius);
     background: var(--primary-500);
+    z-index: 99;
   }
 
   .show-dropdown {
